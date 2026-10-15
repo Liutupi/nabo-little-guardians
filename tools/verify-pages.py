@@ -14,7 +14,7 @@ args = parser.parse_args()
 if not args.url.startswith('https://'):
     parser.error('A public HTTPS deployment URL is required')
 source = Path(args.source)
-files = sorted(p for p in source.rglob('*') if p.is_file() and not p.name.startswith('._'))
+files = sorted(p for p in source.rglob('*') if p.is_file() and not p.name.startswith('.'))
 
 def verify(path):
     relative = path.relative_to(source).as_posix()
