@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+artifacts/
+*.tar.gz
+qa/
+
+._*
+
+release/
+.openai/
+.env
+.env.*
+!.env.example
