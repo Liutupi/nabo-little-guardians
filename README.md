@@ -1,8 +1,10 @@
 # NABO 小小守护队
 
-**医生家庭定制的网页物理弹射冒险 · v1.0.0**
+当前版本 **v1.0.1**：手机竖屏采用放大视角并跟随飞行，支持“查看全场”切换。首次点按游戏会解锁音效；右上角可开关并记住静音偏好。
 
-[立即在线游玩](https://liutupi.github.io/nabo-little-guardians/) · [下载第一版](https://github.com/Liutupi/nabo-little-guardians/releases/tag/v1.0.0) · [反馈问题](https://github.com/Liutupi/nabo-little-guardians/issues)
+**医生家庭定制的网页物理弹射冒险 · v1.0.1**
+
+[立即在线游玩](https://liutupi.github.io/nabo-little-guardians/) · [下载当前版本](https://github.com/Liutupi/nabo-little-guardians/releases/tag/v1.0.1) · [反馈问题](https://github.com/Liutupi/nabo-little-guardians/issues)
 
 <p>
   <img src="dist/assets/toys/penicillin-normal.webp" width="80" alt="青霉素补给">
