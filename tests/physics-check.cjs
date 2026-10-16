@@ -5,13 +5,13 @@ for(const level of (process.env.NABO_LEVEL?[Number(process.env.NABO_LEVEL)-1]:Ar
  let closest=null;
  let success=null;
  // Search bounded, human-playable sequences; actual production code handles all physics.
- const presets=[[178,385],[178,403],[165,405],[170,418],[175,390],[158,397],[182,413],[162,422],[170,378],[155,390],[175,426]];
+ const presets=[[150,420],[148,440],[140,452],[145,462],[155,430],[135,445],[160,455],[142,470],[152,410],[138,432],[150,475]];
  for(let attempt=0;attempt<90&&!success;attempt++){
   const g=game();g.choose(level);g.hero(attempt%3===0?'orange':attempt%3===1?'blue':'nabo');g.step((attempt%4)*20);const history=[];
   for(let n=0;n<g.state().currentAmmo;n++){
    const s=g.state();if(s.phase==='won'){success={attempt,history,state:s};break;}if(s.phase==='lost')break;
    const options=[...s.targets].sort((a,b)=>attempt%4===0?a.x-b.x:attempt%4===1?a.y-b.y:attempt%4===2?b.x-a.x:b.y-a.y);const target=s.shieldActive?s.mechanisms.find(m=>m.type==='switch'):options[attempt%7===0?n%options.length:0];g.setAmmo(target.best||s.ammo);
-   let p;if(s.shieldActive||attempt>4){const vx=16+(attempt%5)*1.25;const t=(target.x-260)/vx+1/.205;const vy=(target.y-362-.194444*t*t)/(t-1/.205);p=[260-vx/.205,362-vy/.205];}else p=presets[(attempt+n*3)%presets.length];g.shoot(...p);
+   let p;if(s.shieldActive||attempt>4){const vx=17.5+(attempt%5)*1.6;const t=(target.x-260)/vx+1/.205;const vy=(target.y-362-.194444*t*t)/(t-1/.205);p=[260-vx/.205,362-vy/.205];}else p=presets[(attempt+n*3)%presets.length];g.shoot(...p);
    // Activate each hero at a reachable point on its flight.
    let delay=attempt%3===1?18:30+(attempt%4)*3;if(attempt>=5&&attempt%3!==1){delay=0;while(delay<100&&g.state().projectile){const p=g.state().projectile;if(Math.hypot(p.x-target.x,p.y-target.y)<(attempt%3===0?145:110))break;g.step();delay++;}}else g.step(delay);g.skill();g.step(450);history.push({aim:p,delay,ammo:g.state().ammo,remaining:g.state().remaining});
   }

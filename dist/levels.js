@@ -1,6 +1,6 @@
 /* Each chapter introduces a different structural or timing problem.
-   The world is drawn at 75% (see game.js), so the field spans x≈0–1700 and
-   y≈-160–480. Buildings are floors of "bays" (shared columns + one slab per
+   The world is drawn at 60% (see game.js), so the field spans x≈0–2130 and
+   y≈-320–480; the slingshot stays at x=260 and the forts start far away. Buildings are floors of "bays" (shared columns + one slab per
    bay); pathogens live inside bays, so the right hit brings floors down on them. */
 (function(root){
   const FLOOR=480;
@@ -22,7 +22,7 @@
     for(const f of floors){const r=floor(x,y,f);blocks.push(...r.blocks);enemies.push(...r.enemies);y=r.top;w=r.right-r.left;}
     const roofs=[].concat(roof||[]);
     for(const kind of roofs){
-      if(kind==='enemy'){enemies.push({x,y:y-26});blocks.push(B(x-44,y-14,12,28,'glass'),B(x+44,y-14,12,28,'glass'));}
+      if(kind==='enemy'){const off=Math.min(35,w/2-12);enemies.push({x,y:y-26});blocks.push(B(x-off,y-14,12,28,'glass'),B(x+off,y-14,12,28,'glass'));}
       else if(kind==='crates')blocks.push(...crates(x,y,3));
       else if(kind==='glass-crates')blocks.push(...crates(x,y,3,24,'glass'));
       else if(kind==='charge')mechanisms.push({type:'charge',x,y:y-18,w:35,h:35});
@@ -39,26 +39,26 @@
   const bridge=(x,y,w,m='glass')=>({blocks:[B(x,y-7,w,14,m)],enemies:[{x,y:y-14-26}]});
 
   const G='glass',S='steel';
-  const L2A=building(1000,[{w:124,m:S},{w:124,h:66,m:G,enemy:true},{w:118,h:62,enemy:true},{w:112,h:58,m:G}]);
-  const L4A=building(1000,[{m:S,enemy:true},{w:118,h:66,m:G,enemy:true},{w:112,h:60},{w:106,h:56,m:G}]);
+  const L2A=building(1300,[{w:124,m:S},{w:124,h:66,m:G,enemy:true},{w:118,h:62,enemy:true},{w:112,h:58,m:G},{w:106,h:56}]);
+  const L4A=building(1320,[{m:S,enemy:true},{w:118,h:66,m:G,enemy:true},{w:112,h:60},{w:106,h:56,m:G},{w:100,h:52}]);
 
   root.NABO_LEVELS=[
-    {title:'诊所花园',subtitle:'观察支点 · 学会第一发连锁',place:'薄荷小镇 · 入门任务',theme:'garden',icon:'❋',ammo:4,type:'antibiotic',difficulty:1,objective:'推倒多米诺，清除 3 个目标',tip:'打中第一块木牌，让它一路推倒整排，砸进双开间小楼。',note:'抗生素只针对细菌，对病毒不起作用。',lesson:'找准支点，比用力更重要。',
-      ...merge(dominoes(880,6),building(1235,[{bays:[true,false],bw:84},{bays:[false,false],bw:84,h:62,m:G},{w:160,h:58}],'bricks'),wall(1395,2,6),building(1535,[{w:124},{w:118,h:64,m:G,enemy:true},{w:112,h:58}],['enemy']))},
-    {title:'洗手台行动',subtitle:'连锁谜题 · 击穿两段玻璃桥',place:'泡泡清洁站 · 玻璃与泡泡补给箱',theme:'water',icon:'◌',ammo:5,type:'antibiotic',difficulty:2,objective:'引爆泡泡箱，连锁清除 5 个目标',tip:'先找承重的那一层。玻璃桥一碎，桥上的目标会砸进下面的泡泡箱。',note:'认真洗手能帮助减少病原体传播。',lesson:'看清连锁，才是小小策略家。',
-      ...merge(wall(860,2,4,G),L2A,building(1330,[{bays:[true,false],bw:80,m:S},{w:124,h:66,m:G},{w:118,h:62,enemy:true},{w:112,h:58,m:G}]),bridge(1165,L2A.top,322),charge(1330,396-18),building(1560,[{bays:[false,false],bw:80,m:G},{w:150,h:60},{w:120,h:56,m:G}],'glass-crates'))},
-    {title:'呼吸道巡逻',subtitle:'高低两路 · 反弹板上的病毒',place:'呼吸云岛 · 弧线与反弹',theme:'cloud',icon:'◇',ammo:5,type:'immune',difficulty:2,objective:'利用反弹板，清除高低 4 个病毒',tip:'蓝色斜板能把弹药弹向高处。五层塔有两层玻璃，打碎它，上面会整段塌下来。',note:'抗生素不能治疗病毒感染；本关免疫护盾为幻想机制。',lesson:'一条路走不通，就试试另一条。',
-      ...merge(shelf(1000,300,120),building(1210,[{w:124,m:G},{w:120,h:66,m:G,enemy:true},{w:116,h:62},{w:112,h:60,m:G,enemy:true},{w:106,h:56}],'glass-crates'),wall(1365,2,6),building(1510,[{w:124,h:66,enemy:true},{w:118,h:60,m:G},{w:112,h:56}],'crates'),{mechanisms:[{type:'spring',x:710,y:450,w:112,h:16,angle:-.32}]})},
-    {title:'培养皿迷宫',subtitle:'结构挑战 · 双塔与承重桥',place:'微观实验室 · 多层承重结构',theme:'lab',icon:'⌘',ammo:6,type:'antibiotic',difficulty:3,objective:'拆解双塔，清除 6 个目标',tip:'钢柱不容易打碎。打碎中间的玻璃层，上面整层就会塌下来。',note:'医生会结合感染部位与病原检查等信息判断治疗方案。',lesson:'复杂的问题，也藏着一个小小的突破口。',
-      ...merge(wall(860,2,5,G),L4A,building(1240,[{m:S,enemy:true},{w:118,h:66,m:G,enemy:true},{w:112,h:60},{w:106,h:56,m:G}]),bridge(1120,L4A.top,240),charge(1272,L4A.top-18),building(1500,[{bays:[false,true],bw:82,m:S},{bays:[false,false],bw:82,h:60,m:G},{w:150,h:56}],'bricks'))},
-    {title:'耐药堡垒',subtitle:'机关顺序 · 先关护盾，再破堡垒',place:'琥珀峡谷 · 护盾发生器在线',theme:'sunset',icon:'⬡',ammo:6,type:'antibiotic',difficulty:3,objective:'击中橙色机关，再清除 5 个装甲目标',tip:'先瞄准左侧橙色按钮关闭护盾。三开间大厅的钢架很硬，从上面的木层和玻璃层下手。',note:'耐药性属于病原体。按医嘱使用抗生素，避免不必要的使用。',lesson:'顺序对了，困难就有了答案。',
-      ...merge(wall(900,2,4),building(1140,[{bays:[true,false,true],bw:84,m:S},{bays:[false,true,false],bw:84,h:64},{bays:[false,false],bw:100,h:60,m:G},{w:150,h:56}],'crates'),charge(1335),building(1480,[{w:124,enemy:true},{w:118,h:62,m:G},{w:112,h:58},{w:106,h:54,m:G}],['enemy']),{mechanisms:[{type:'switch',x:715,y:437}]}),shielded:true},
+    {title:'诊所花园',subtitle:'观察支点 · 学会第一发连锁',place:'薄荷小镇 · 入门任务',theme:'garden',icon:'❋',ammo:4,type:'antibiotic',difficulty:1,objective:'推倒多米诺，清除 3 个目标',tip:'拉满弓等金光亮起再松手，打中第一块木牌，让整排一路推进三开间小楼。',note:'抗生素只针对细菌，对病毒不起作用。',lesson:'找准支点，比用力更重要。',
+      ...merge(dominoes(1100,8),building(1560,[{bays:[true,false,false],bw:84},{bays:[false,false,false],bw:84,h:62,m:G},{bays:[false,false],bw:110,h:58}],'bricks'),wall(1752,2,6),building(1880,[{w:124},{w:118,h:64,m:G,enemy:true},{w:112,h:58},{w:106,h:54,m:G}],['enemy']),building(2035,[{w:96,h:60,m:G},{w:90,h:52}],'crates'))},
+    {title:'洗手台行动',subtitle:'连锁谜题 · 击穿两段玻璃桥',place:'泡泡清洁站 · 玻璃与泡泡补给箱',theme:'water',icon:'◌',ammo:6,type:'antibiotic',difficulty:2,objective:'引爆泡泡箱，连锁清除 5 个目标',tip:'先找承重的那一层。长玻璃桥一碎，桥上的目标会砸下去。',note:'认真洗手能帮助减少病原体传播。',lesson:'看清连锁，才是小小策略家。',
+      ...merge(wall(1150,2,4,G),L2A,building(1720,[{bays:[true,false],bw:80,m:S},{w:124,h:66,m:G},{w:118,h:62,enemy:true},{w:112,h:58,m:G},{w:106,h:56}]),bridge(1510,L2A.top,432),charge(1720,396-18),building(1950,[{bays:[false,false],bw:80,m:G},{w:150,h:60},{bays:[false,false],bw:64,h:56,m:G},{w:130,h:52}],'glass-crates'))},
+    {title:'呼吸道巡逻',subtitle:'高低两路 · 反弹板上的病毒',place:'呼吸云岛 · 弧线与反弹',theme:'cloud',icon:'◇',ammo:6,type:'immune',difficulty:2,objective:'利用反弹板，清除高低 4 个病毒',tip:'蓝色斜板能把弹药弹向高处。六层塔有三层玻璃，打碎它，上面会整段塌下来。',note:'抗生素不能治疗病毒感染；本关免疫护盾为幻想机制。',lesson:'一条路走不通，就试试另一条。',
+      ...merge(shelf(1250,280,120),building(1480,[{w:124,m:G},{w:120,h:66,m:G,enemy:true},{w:116,h:62},{w:112,h:60,m:G,enemy:true},{w:106,h:56},{w:100,h:52,m:G}],'glass-crates'),wall(1650,2,7),building(1820,[{w:124,h:66,enemy:true},{w:118,h:60,m:G},{w:112,h:56},{w:106,h:52,m:G}],'crates'),building(1995,[{bays:[false,false],bw:76,m:G},{w:140,h:56}],'bricks'),{mechanisms:[{type:'spring',x:1000,y:450,w:112,h:16,angle:-.32}]})},
+    {title:'培养皿迷宫',subtitle:'结构挑战 · 双塔与承重桥',place:'微观实验室 · 多层承重结构',theme:'lab',icon:'⌘',ammo:7,type:'antibiotic',difficulty:3,objective:'拆解双塔，清除 6 个目标',tip:'钢柱不容易打碎。打碎中间的玻璃层，上面整层就会塌下来。',note:'医生会结合感染部位与病原检查等信息判断治疗方案。',lesson:'复杂的问题，也藏着一个小小的突破口。',
+      ...merge(wall(1150,2,5,G),L4A,building(1640,[{m:S,enemy:true},{w:118,h:66,m:G,enemy:true},{w:112,h:60},{w:106,h:56,m:G},{w:100,h:52}]),bridge(1480,L4A.top,322),building(1905,[{bays:[false,true],bw:82,m:S},{bays:[false,false],bw:82,h:60,m:G},{w:150,h:56},{w:120,h:52,m:G}],['charge']),wall(2060,1,6))},
+    {title:'耐药堡垒',subtitle:'机关顺序 · 先关护盾，再破堡垒',place:'琥珀峡谷 · 护盾发生器在线',theme:'sunset',icon:'⬡',ammo:6,type:'antibiotic',difficulty:3,objective:'击中橙色机关，再清除 5 个装甲目标',tip:'先瞄准中间的橙色按钮关闭护盾。三开间大厅的钢架很硬，从上面的木层和玻璃层下手。',note:'耐药性属于病原体。按医嘱使用抗生素，避免不必要的使用。',lesson:'顺序对了，困难就有了答案。',
+      ...merge(wall(1180,2,4),building(1440,[{bays:[true,false,true],bw:84,m:S},{bays:[false,true,false],bw:84,h:64},{bays:[false,false],bw:100,h:60,m:G},{w:150,h:56},{w:124,h:52,m:G}],'crates'),building(1790,[{w:124,enemy:true},{w:118,h:62,m:G},{w:112,h:58},{w:106,h:54,m:G},{w:100,h:50}],['enemy']),building(1990,[{w:110,h:60,m:G},{w:104,h:54},{w:98,h:50,m:G}],'charge'),wall(1675,1,5),{mechanisms:[{type:'switch',x:980,y:437}]}),shielded:true},
     {title:'ICU 静夜',subtitle:'时机挑战 · 穿过升降闸门',place:'星光守护站 · 等一个合适的窗口',theme:'night',icon:'☾',ammo:7,type:'immune',difficulty:4,objective:'穿过移动障碍，清除 6 个病毒',tip:'观察升降门的节奏。左塔楼顶的泡泡箱掉下来会爆炸。',note:'团队协作、细致观察与耐心，在医院里都很重要。',lesson:'有时最好的行动，是等准那个时机。',
-      ...merge(wall(880,2,4,G),building(1010,[{w:120,m:G,enemy:true},{w:114,h:64,m:G,enemy:true},{w:108,h:60},{w:104,h:54,m:G}],'charge'),building(1260,[{bays:[true,true],bw:84},{w:150,h:64,m:G},{w:140,h:58}],['enemy']),wall(1408,2,6,G),shelf(1518,300,100),{mechanisms:[{type:'gate',x:767,y:357,w:22,h:160,amplitude:83,period:4.2}]})},
+      ...merge(wall(1150,2,4,G),building(1300,[{w:120,m:G,enemy:true},{w:114,h:64,m:G,enemy:true},{w:108,h:60},{w:104,h:54,m:G},{w:98,h:50}],'charge'),building(1560,[{bays:[true,true],bw:84},{w:150,h:64,m:G},{w:140,h:58},{w:130,h:54,m:G}],['enemy']),wall(1720,2,6,G),shelf(1840,300,100),building(2000,[{w:100,h:58},{w:94,h:52,m:G}],'crates'),{mechanisms:[{type:'gate',x:1000,y:357,w:22,h:160,amplitude:83,period:4.2}]})},
     {title:'CRRT 净化站',subtitle:'路线规划 · 反弹、机关与高台',place:'蓝色净化站 · 精准配合',theme:'water',icon:'≈',ammo:7,type:'antibiotic',difficulty:4,objective:'解除护盾，再规划高低两条攻击线',tip:'用低弧线先开机关，再用反弹板或高抛突破高台；冲刺适合穿透玻璃。',note:'CRRT 只提供本关的视觉灵感，弹射机制不代表其临床作用。',lesson:'把观察、顺序和时机，一起装进计划。',
-      ...merge(building(1000,[{m:S,enemy:true},{w:116,h:64,m:G,enemy:true},{w:110,h:58}],'charge'),shelf(1150,290,100,'wood'),building(1340,[{w:124,m:G,enemy:true},{w:118,h:64},{w:112,h:58,m:G},{w:106,h:54}],'glass-crates'),building(1535,[{bays:[true,false],bw:82},{w:150,h:56,m:G},{w:130,h:52}],'bricks'),{mechanisms:[{type:'switch',x:680,y:429},{type:'spring',x:772,y:452,w:105,h:16,angle:-.38}]}),shielded:true},
-    {title:'全家总动员',subtitle:'终章挑战 · 闯进联合堡垒',place:'家庭守护日 · 联合堡垒与病毒大王',theme:'sunset',icon:'♡',ammo:9,type:'antibiotic',difficulty:5,objective:'关闭护盾、穿过闸门，击败联合堡垒',tip:'先开左侧机关，再切换补给。五层主塔最难拆，先用泡泡箱和大厅的倒塌削弱它。',note:'把陪伴变成冒险。最强的超能力，叫做我们。',lesson:'有计划、有耐心，还有彼此。今天全家都是英雄。',
-      ...merge(building(960,[{m:S,enemy:true},{w:116,h:64,m:G,enemy:true},{w:108,h:60},{w:104,h:54,m:G}],'charge'),building(1210,[{bays:[false,true,false],bw:80},{bays:[false,false,false],bw:80,h:60,m:G},{bays:[false,false],bw:100,h:56}],'bricks'),charge(1130),building(1475,[{w:124,enemy:true},{w:118,h:64,m:G},{w:112,h:62,enemy:true},{w:106,h:58,m:G},{w:100,h:54}],['enemy']),{mechanisms:[{type:'switch',x:660,y:438},{type:'gate',x:752,y:357,w:22,h:155,amplitude:80,period:4.8}]}),shielded:true}
+      ...merge(building(1300,[{m:S,enemy:true},{w:116,h:64,m:G,enemy:true},{w:110,h:58},{w:104,h:54,m:G}],'charge'),shelf(1460,280,100,'wood'),building(1650,[{w:124,m:G,enemy:true},{w:118,h:64},{w:112,h:58,m:G},{w:106,h:54},{w:100,h:50,m:G}],'glass-crates'),building(1885,[{bays:[true,false],bw:82},{w:150,h:56,m:G},{bays:[false,false],bw:64,h:52},{w:120,h:48,m:G}],'bricks'),wall(2050,1,5,G),{mechanisms:[{type:'switch',x:960,y:429},{type:'spring',x:1080,y:452,w:105,h:16,angle:-.38}]}),shielded:true},
+    {title:'全家总动员',subtitle:'终章挑战 · 闯进联合堡垒',place:'家庭守护日 · 联合堡垒与病毒大王',theme:'sunset',icon:'♡',ammo:9,type:'antibiotic',difficulty:5,objective:'关闭护盾、穿过闸门，击败联合堡垒',tip:'先开机关，再切换补给。六层主塔最难拆，先用泡泡箱和大厅的倒塌削弱它。',note:'把陪伴变成冒险。最强的超能力，叫做我们。',lesson:'有计划、有耐心，还有彼此。今天全家都是英雄。',
+      ...merge(building(1260,[{m:S,enemy:true},{w:116,h:64,m:G,enemy:true},{w:108,h:60},{w:104,h:54,m:G},{w:98,h:50}],'charge'),building(1520,[{bays:[false,true,false],bw:80},{bays:[false,false,false],bw:80,h:60,m:G},{bays:[false,false],bw:100,h:56},{w:150,h:52,m:G}],'bricks'),charge(1440),building(1800,[{w:124,enemy:true},{w:118,h:64,m:G},{w:112,h:62,enemy:true},{w:106,h:58,m:G},{w:100,h:54},{w:96,h:50,m:G}],['enemy']),wall(1935,2,6),building(2050,[{w:96,h:56,m:G},{w:90,h:50}],'crates'),{mechanisms:[{type:'switch',x:940,y:438},{type:'gate',x:1040,y:357,w:22,h:155,amplitude:80,period:4.8}]}),shielded:true}
   ];
   if(typeof module!=='undefined')module.exports=root.NABO_LEVELS;
 })(typeof window!=='undefined'?window:globalThis);

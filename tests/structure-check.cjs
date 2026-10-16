@@ -10,10 +10,10 @@ const box=(x,y,w,h,label)=>({l:x-w/2,r:x+w/2,t:y-h/2,b:y+h/2,label});
 const overlap=(a,b)=>Math.min(a.r,b.r)-Math.max(a.l,b.l)>1&&Math.min(a.b,b.b)-Math.max(a.t,b.t)>1;
 levels.forEach((level,i)=>{
   assert.equal(level.enemies.length,counts[i],`Level ${i+1} must keep ${counts[i]} targets`);
-  assert(level.blocks.length>=30,`Level ${i+1} should have a real structure to demolish`);
+  assert(level.blocks.length>=60,`Level ${i+1} should have a real structure to demolish`);
   const bodies=[...level.blocks.map((b,k)=>box(b.x,b.y,b.w,b.h,'block'+k)),...level.enemies.map((e,k)=>box(e.x,e.y,48,48,'enemy'+k)),...(level.mechanisms||[]).filter(m=>m.type==='charge').map((m,k)=>box(m.x,m.y,m.w,m.h,'charge'+k))];
   const statics=(level.platforms||[]).flatMap(p=>[box(p.x,p.y,p.w,p.h,'shelf'),box(p.x,(FLOOR+p.y)/2,23,FLOOR-p.y,'column')]);
-  for(const b of bodies){assert(b.b<=FLOOR+.5,`Level ${i+1} ${b.label} sinks into the floor`);assert(b.r<1700&&b.t>-150,`Level ${i+1} ${b.label} is off screen`);for(const s of statics)assert(!overlap(b,s),`Level ${i+1} ${b.label} overlaps ${s.label}`);}
+  for(const b of bodies){assert(b.b<=FLOOR+.5,`Level ${i+1} ${b.label} sinks into the floor`);assert(b.r<2110&&b.t>-300,`Level ${i+1} ${b.label} is off screen`);for(const s of statics)assert(!overlap(b,s),`Level ${i+1} ${b.label} overlaps ${s.label}`);}
   for(let a=0;a<bodies.length;a++)for(let c=a+1;c<bodies.length;c++)assert(!overlap(bodies[a],bodies[c]),`Level ${i+1}: ${bodies[a].label} overlaps ${bodies[c].label}`);
 });
 const settle=[];
