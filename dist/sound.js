@@ -32,6 +32,8 @@
     play(name,power=0){if(name==='launch'){this.tone(700,.2,'triangle',.08);this.tone(170,.14,'sine',.11);}else if(name==='pull')this.tone(180+power*260,.06,'triangle',.025);else if(name==='load')this.tone(420,.07,'sine',.035);else if(name==='armor'){this.tone(120,.2,'sawtooth',.035);this.tone(1200,.16,'triangle',.08);this.tone(900,.12,'triangle',.05,.06);}else if(name==='glass'){this.noise(.22,.07+power*.05,3200,1.2);this.tone(1900+Math.random()*500,.14,'triangle',.03);this.tone(2600+Math.random()*600,.1,'triangle',.022,.04);}
       else if(name==='wood'){this.noise(.2,.09+power*.06,520,.9);this.tone(150+Math.random()*30,.16,'triangle',.07);}
       else if(name==='steel'){this.noise(.16,.05,1500,2);this.tone(330,.32,'square',.025);this.tone(620,.26,'triangle',.035,.02);}
+      else if(name==='full'){this.tone(660,.08,'triangle',.05);this.tone(990,.12,'triangle',.05,.07);}
+      else if(name==='perfect'){this.tone(523,.12,'triangle',.07);this.tone(784,.14,'triangle',.07,.06);this.tone(1047,.22,'sine',.06,.12);}
       else if(name==='knock')this.tone(210+power*80,.06,'triangle',.03);
       else if(name==='chain'){const n=Math.min(power,16);this.tone(440*Math.pow(2,n/12),.12,'triangle',.05);if(n>=6)this.tone(660*Math.pow(2,n/12),.1,'sine',.035,.05);}
       else if(name==='enabled'){this.tone(660,.1,'sine',.09);this.tone(880,.15,'sine',.09,.1);}}
